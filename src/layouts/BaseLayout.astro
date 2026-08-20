@@ -1,0 +1,113 @@
+---
+import "@fontsource-variable/bitter";
+import "@fontsource-variable/instrument-sans";
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/600.css";
+import "@fontsource/rye";
+import bitterLatinUrl from "@fontsource-variable/bitter/files/bitter-latin-wght-normal.woff2?url";
+import "@/styles/global.css";
+import { getImage } from "astro:assets";
+import heroImage from "../../images/Vault223_Hero.jpg";
+import SiteChrome from "@/components/SiteChrome";
+import Footer from "@/components/Footer.astro";
+import { business, weeklyHours } from "@/data/business";
+
+interface Props {
+  title: string;
+  description: string;
+  noIndex?: boolean;
+}
+
+const {
+  title,
+  description,
+  noIndex = false,
+} = Astro.props;
+const optimizedSocialImage = await getImage({
+  src: heroImage,
+  width: 1200,
+  height: 630,
+  fit: "cover",
+  position: "center",
+  format: "jpg",
+  quality: 78,
+});
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const socialImage = new URL(optimizedSocialImage.src, Astro.site);
+const pageTitle = title === "Vault 223" ? title : `${title} | Vault 223`;
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "CafeOrCoffeeShop",
+  name: business.name,
+  description: "A locally owned café and grab-and-go eatery built around a historic vault in downtown Kokomo.",
+  url: "https://vault223.com",
+  image: socialImage.toString(),
+  telephone: business.phone,
+  email: business.email,
+  priceRange: "$10–20",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: business.address.street,
+    addressLocality: business.address.city,
+    addressRegion: business.address.state,
+    postalCode: business.address.postalCode,
+    addressCountry: "US",
+  },
+  openingHoursSpecification: weeklyHours
+    .filter((entry) => entry.intervals.length)
+    .flatMap((entry) =>
+      entry.intervals.map((interval) => ({
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: entry.label,
+        opens: interval.open,
+        closes: interval.close,
+      })),
+    ),
+  hasMenu: "https://vault223.com/menu",
+  sameAs: [business.facebook],
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#11100E" />
+    <link rel="preload" href={bitterLatinUrl} as="font" type="font/woff2" crossorigin="anonymous" />
+    <meta name="description" content={description} />
+    {noIndex && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/png" href="/vault-223-logo.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Vault 223" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:alt" content="A table filled with food and drinks from Vault 223" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+    <title>{pageTitle}</title>
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <SiteChrome client:load logoSrc="/vault-223-logo.png" currentPath={Astro.url.pathname} />
+    <main id="main-content">
+      <slot />
+    </main>
+    <Footer />
+    <noscript>
+      <div class="noscript-hours">Regular hours: Tuesday–Friday 7 AM–5 PM · Saturday 10 AM–4 PM · Sunday–Monday closed.</div>
+    </noscript>
+    <script>
+      document.addEventListener("click", (event) => {
+        const trigger = event.target instanceof Element ? event.target.closest("[data-order-trigger]") : null;
+        if (trigger) window.dispatchEvent(new Event("vault:order"));
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,40 @@
+---
+import { business, formatAddress } from "@/data/business";
+---
+
+<footer class="site-footer">
+  <div class="footer-dial" aria-hidden="true"></div>
+  <div class="footer-grid page-shell">
+    <div class="footer-brand">
+      <img src="/vault-223-logo.png" width="512" height="512" alt="Vault 223" loading="lazy" />
+      <p>Historic character.<br />Modern neighborhood fuel.</p>
+    </div>
+    <div>
+      <p class="footer-label">Come by</p>
+      <address>
+        <a href={business.directions} target="_blank" rel="noreferrer">{formatAddress()}</a>
+      </address>
+      <a href={business.phoneHref}>{business.phone}</a>
+      <a href={`mailto:${business.email}`}>{business.email}</a>
+    </div>
+    <div>
+      <p class="footer-label">Regular hours</p>
+      <dl class="footer-hours">
+        <div><dt>Tue–Fri</dt><dd>7 AM–5 PM</dd></div>
+        <div><dt>Saturday</dt><dd>10 AM–4 PM</dd></div>
+        <div><dt>Sun–Mon</dt><dd>Closed</dd></div>
+      </dl>
+    </div>
+    <nav aria-label="Footer navigation">
+      <p class="footer-label">Explore</p>
+      <a href="/menu/">Full menu</a>
+      <a href="/visit/">Visit & order</a>
+      <a href={business.facebook} target="_blank" rel="noreferrer">Facebook updates</a>
+      <a href={business.directions} target="_blank" rel="noreferrer">Get directions</a>
+    </nav>
+  </div>
+  <div class="footer-bottom page-shell">
+    <span>© {new Date().getFullYear()} Vault 223 LLC</span>
+    <span>{business.tagline}</span>
+  </div>
+</footer>

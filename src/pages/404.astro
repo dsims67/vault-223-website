@@ -1,0 +1,22 @@
+---
+import { ArrowLeftIcon as ArrowLeft } from "@phosphor-icons/react/dist/ssr";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Page not found" description="This page could not be found." noIndex>
+  <section class="not-found page-shell">
+    <div class="not-found-dial"><span>404</span></div>
+    <p class="eyebrow">Wrong combination</p>
+    <h1>This door doesn’t open.</h1>
+    <p>The page you’re looking for may have moved. Head back to Vault 223 and try another route.</p>
+    <a class="brass-button" href="/"><ArrowLeft size={20} /> Back to home</a>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found { display: grid; min-height: 72vh; place-content: center; justify-items: start; padding-block: 80px; }
+  .not-found-dial { display: grid; width: 150px; height: 150px; margin-bottom: 30px; place-items: center; border: 2px solid var(--brass); border-radius: 50%; box-shadow: inset 0 0 0 13px var(--cream), inset 0 0 0 14px var(--brass); }
+  .not-found-dial span { font-family: "Bitter Variable", serif; font-size: 2.2rem; font-weight: 800; }
+  .not-found h1 { max-width: 760px; margin-bottom: 18px; }
+  .not-found > p:not(.eyebrow) { max-width: 540px; margin-bottom: 25px; color: var(--muted); font-size: 1.06rem; }
+</style>

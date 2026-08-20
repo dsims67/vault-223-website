@@ -1,0 +1,210 @@
+---
+import { Picture } from "astro:assets";
+import { ArrowRightIcon as ArrowRight, ForkKnifeIcon as ForkKnife } from "@phosphor-icons/react/dist/ssr";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { menu } from "@/data/menu";
+import breakfastImage from "../../images/Vault223_BreakfastCroissant.jpg";
+import crepeImage from "../../images/Vault223_VaultedCrepe.jpg";
+import paniniImage from "../../images/Vault223_ChickenPestoPanini.jpg";
+import saladImage from "../../images/Vault223_MediterraneanSalad.jpg";
+import coldBrewImage from "../../images/Vault223_ColdBrew.jpg";
+import latteImage from "../../images/Vault223_CremeBruleeLatte.jpg";
+import pizzaImage from "../../images/Vault223_OurFamousVaultedPizza.jpg";
+
+const categoryImages = {
+  breakfast: { image: breakfastImage, alt: "Vaulted breakfast croissant with ham, egg, and cheese" },
+  "sweet-crepes": { image: crepeImage, alt: "Vaulted dessert crepe with strawberries and chocolate" },
+  lunch: { image: paniniImage, alt: "Grilled chicken pesto panini" },
+  salads: { image: saladImage, alt: "Mediterranean salad with cucumber, tomato, feta, and chickpeas" },
+  "coffee-tea": { image: coldBrewImage, alt: "Vault 223 cold brew on a branded coaster" },
+  "craft-creations": { image: latteImage, alt: "Iced crème brûlée latte with caramel" },
+  flatbread: { image: pizzaImage, alt: "Vaulted flatbread pizza" },
+} as const;
+---
+
+<BaseLayout
+  title="Menu"
+  description="Explore the Vault 223 menu: all-day breakfast, crepes, sandwiches, salads, flatbread pizza, coffee, craft lattes, spritzes, and Vault Fizz."
+>
+  <header class="menu-hero">
+    <div class="page-shell menu-hero-grid">
+      <div class="menu-hero-copy">
+        <p class="eyebrow">Breakfast & lunch · all day</p>
+        <h1>Open the menu.</h1>
+        <p>Comforting favorites, curious combinations, and coffee made your way—served from open to close.</p>
+        <button class="brass-button" type="button" data-order-trigger><ForkKnife size={20} weight="bold" /> Order Online</button>
+      </div>
+      <div class="menu-hero-images" aria-hidden="true">
+        <div class="menu-hero-photo menu-photo-one">
+          <Picture src={crepeImage} formats={["avif", "webp"]} widths={[480, 720, 960]} sizes="(min-width: 900px) 28vw, 54vw" quality={88} alt="" loading="eager" />
+        </div>
+        <div class="menu-hero-photo menu-photo-two">
+          <Picture src={latteImage} formats={["avif", "webp"]} widths={[480, 720, 960]} sizes="(min-width: 900px) 22vw, 42vw" quality={88} alt="" loading="eager" />
+        </div>
+        <span class="menu-dial">223</span>
+      </div>
+    </div>
+  </header>
+
+  <nav class="mobile-category-nav" aria-label="Menu categories">
+    <div>
+      {menu.map((category) => <a href={`#${category.slug}`}>{category.title}</a>)}
+    </div>
+  </nav>
+
+  <div class="page-shell menu-layout section-space">
+    <aside class="menu-sidebar">
+      <p class="eyebrow">Jump to</p>
+      <nav aria-label="Menu section navigation">
+        {menu.map((category, index) => (
+          <a href={`#${category.slug}`}><span>{String(index + 1).padStart(2, "0")}</span>{category.title}</a>
+        ))}
+      </nav>
+      <div class="menu-sidebar-note">
+        <strong>Made your way.</strong>
+        <p>Ask about extra flavors, milk choices, add-ons, and today’s availability.</p>
+      </div>
+    </aside>
+
+    <div class="menu-sections">
+      {menu.map((category, categoryIndex) => {
+        const visual = categoryImages[category.slug as keyof typeof categoryImages];
+        return (
+          <section class="menu-category" id={category.slug}>
+            <header class="menu-category-heading">
+              <div>
+                <span class="menu-section-number">{String(categoryIndex + 1).padStart(2, "0")}</span>
+                <p class="eyebrow">{category.eyebrow}</p>
+                <h2>{category.title}</h2>
+              </div>
+              {category.note && <p class="category-note">{category.note}</p>}
+            </header>
+            {visual && (
+              <div class="menu-category-image">
+                <Picture
+                  src={visual.image}
+                  formats={["avif", "webp"]}
+                  widths={[640, 960, 1440, 1800]}
+                  sizes="(min-width: 960px) 68vw, 100vw"
+                  quality={88}
+                  alt={visual.alt}
+                  loading="lazy"
+                />
+              </div>
+            )}
+            <div class="menu-items">
+              {category.items.map((item) => (
+                <article class:list={["menu-item", item.featured && "menu-item-featured"]}>
+                  <div class="menu-item-copy">
+                    <h3>{item.name}{item.featured && <span>House pick</span>}</h3>
+                    <p>{item.description}</p>
+                  </div>
+                  <div class="menu-prices" aria-label={`${item.name} prices`}>
+                    {item.prices.map((itemPrice) => (
+                      <div>{itemPrice.label && <span>{itemPrice.label}</span>}<strong>{itemPrice.value}</strong></div>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        );
+      })}
+      <div class="menu-disclaimer">
+        <span>223</span>
+        <div>
+          <h2>Prices and availability may change.</h2>
+          <p>Questions about an item or today’s options? Give us a call at <a href="tel:+17655533417">(765) 553-3417</a>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="menu-order-cta section-space">
+    <div class="page-shell menu-order-grid">
+      <div>
+        <p class="eyebrow">Found your favorite?</p>
+        <h2>Send it to the kitchen.</h2>
+      </div>
+      <button class="brass-button" type="button" data-order-trigger>Place an order <ArrowRight size={20} /></button>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .menu-hero { position: relative; overflow: hidden; background: var(--ink); color: var(--cream); }
+  .menu-hero::after { position: absolute; right: -80px; bottom: -150px; width: 360px; height: 360px; border: 2px solid rgb(211 154 50 / .16); border-radius: 50%; box-shadow: inset 0 0 0 34px var(--ink), inset 0 0 0 35px rgb(211 154 50 / .15); content: ""; }
+  .menu-hero-grid { position: relative; z-index: 1; display: grid; min-height: 610px; gap: 44px; align-items: center; padding-block: clamp(58px, 9vw, 120px); }
+  .menu-hero-copy { position: relative; z-index: 2; }
+  .menu-hero-copy h1 { margin-bottom: 20px; }
+  .menu-hero-copy > p:not(.eyebrow) { max-width: 570px; margin-bottom: 28px; color: rgb(246 235 215 / .72); font-size: clamp(1.05rem, 2vw, 1.3rem); }
+  .menu-hero-images { position: relative; min-height: 340px; }
+  .menu-hero-photo { position: absolute; overflow: hidden; border: 5px solid var(--cream); box-shadow: 0 22px 70px rgb(0 0 0 / .36); }
+  .menu-hero-photo :global(picture), .menu-hero-photo :global(img) { width: 100%; height: 100%; }
+  .menu-hero-photo :global(img) { object-fit: cover; }
+  .menu-photo-one { top: 12px; left: 0; width: 68%; height: 270px; transform: rotate(-3deg); }
+  .menu-photo-two { right: 2%; bottom: 0; width: 47%; height: 230px; transform: rotate(4deg); }
+  .menu-dial { position: absolute; top: -30px; right: -18px; display: grid; width: 112px; height: 112px; place-items: center; border: 2px solid var(--brass); border-radius: 50%; background: var(--ink); color: var(--brass); font-family: "Bitter Variable", serif; font-size: 2rem; font-weight: 800; }
+  .mobile-category-nav { position: sticky; z-index: 45; top: var(--header-height); overflow: hidden; border-bottom: 1px solid var(--line); background: rgb(246 235 215 / .96); backdrop-filter: blur(12px); }
+  .mobile-category-nav > div { display: flex; gap: 8px; overflow-x: auto; padding: 10px 16px; scroll-padding-inline: 16px; scrollbar-width: none; }
+  .mobile-category-nav a { display: inline-flex; min-height: 44px; flex: 0 0 auto; align-items: center; border: 1px solid var(--line); background: var(--paper); padding: 8px 14px; font-size: .78rem; font-weight: 700; }
+  .menu-layout { position: relative; padding-top: 56px; }
+  .menu-sidebar { display: none; }
+  .menu-category { scroll-margin-top: calc(var(--header-height) + 72px); border-bottom: 1px solid var(--line); padding-bottom: clamp(64px, 9vw, 110px); }
+  .menu-category + .menu-category { padding-top: clamp(64px, 9vw, 110px); }
+  .menu-category-heading { display: grid; gap: 16px; margin-bottom: 28px; }
+  .menu-category-heading h2 { margin: 0; }
+  .menu-category-heading .eyebrow { margin-bottom: 8px; }
+  .menu-section-number { display: inline-block; margin-bottom: 12px; color: var(--brass); font-family: "IBM Plex Mono", monospace; font-size: .7rem; }
+  .category-note { max-width: 580px; margin: 0; align-self: end; color: var(--muted); font-size: .9rem; }
+  .menu-category-image { height: clamp(230px, 42vw, 390px); margin-bottom: 26px; overflow: hidden; }
+  .menu-category-image :global(picture), .menu-category-image :global(img) { width: 100%; height: 100%; }
+  .menu-category-image :global(img) { object-fit: cover; object-position: center 54%; }
+  .menu-items { display: grid; border-top: 2px solid var(--ink); }
+  .menu-item { position: relative; display: grid; gap: 14px; border-bottom: 1px solid var(--line); padding: 22px 0; }
+  .menu-item h3 { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 7px; font-size: clamp(1.16rem, 3.5vw, 1.48rem); letter-spacing: -.02em; }
+  .menu-item h3 span { border: 1px solid var(--brass); padding: 3px 6px; color: var(--tomato-text); font-family: "IBM Plex Mono", monospace; font-size: .55rem; letter-spacing: .08em; text-transform: uppercase; }
+  .menu-item p { max-width: 68ch; margin: 0; color: var(--muted); font-size: .94rem; }
+  .menu-item-featured::before { position: absolute; top: 25px; left: -13px; width: 5px; height: 22px; background: var(--brass); content: ""; }
+  .menu-prices { display: flex; flex-wrap: wrap; gap: 7px 12px; }
+  .menu-prices div { display: inline-flex; min-height: 30px; align-items: baseline; gap: 5px; font-family: "IBM Plex Mono", monospace; font-size: .74rem; }
+  .menu-prices span { color: var(--muted); font-size: .62rem; text-transform: uppercase; }
+  .menu-prices strong { white-space: nowrap; }
+  .menu-disclaimer { display: grid; gap: 22px; padding: 54px 0 0; }
+  .menu-disclaimer > span { display: grid; width: 96px; height: 96px; place-items: center; border: 2px solid var(--brass); border-radius: 50%; font-family: "Bitter Variable", serif; font-size: 1.8rem; font-weight: 800; }
+  .menu-disclaimer h2 { margin-bottom: 10px; font-size: clamp(1.6rem, 5vw, 2.5rem); }
+  .menu-disclaimer p { color: var(--muted); }
+  .menu-disclaimer a { border-bottom: 1px solid currentColor; font-weight: 700; }
+  .menu-order-cta { background: var(--slate); color: var(--cream); }
+  .menu-order-grid { display: grid; gap: 28px; align-items: end; }
+  .menu-order-grid h2 { margin: 0; }
+  @media (min-width: 700px) {
+    .menu-hero-grid { grid-template-columns: .9fr 1.1fr; }
+    .menu-hero-images { min-height: 420px; }
+    .menu-photo-one { width: 70%; height: 330px; }
+    .menu-photo-two { width: 48%; height: 285px; }
+    .menu-category-heading { grid-template-columns: 1fr .8fr; }
+    .menu-item { grid-template-columns: 1fr minmax(150px, auto); align-items: start; }
+    .menu-prices { justify-content: flex-end; }
+    .menu-disclaimer { grid-template-columns: auto 1fr; align-items: center; }
+    .menu-order-grid { grid-template-columns: 1fr auto; }
+  }
+  @media (min-width: 960px) {
+    .mobile-category-nav { display: none; }
+    .menu-hero-grid { min-height: 670px; grid-template-columns: .85fr 1.15fr; }
+    .menu-hero-copy h1 { font-size: clamp(4.4rem, 7vw, 7rem); }
+    .menu-hero-images { min-height: 500px; }
+    .menu-photo-one { left: 6%; width: 68%; height: 390px; }
+    .menu-photo-two { width: 43%; height: 330px; }
+    .menu-layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: clamp(58px, 7vw, 110px); padding-top: 90px; }
+    .menu-sidebar { position: sticky; top: calc(var(--header-height) + 28px); display: block; height: fit-content; }
+    .menu-sidebar nav { display: grid; border-top: 1px solid var(--line); }
+    .menu-sidebar nav a { display: flex; min-height: 41px; align-items: center; gap: 11px; border-bottom: 1px solid var(--line); font-size: .8rem; font-weight: 700; }
+    .menu-sidebar nav span { color: var(--brass); font-family: "IBM Plex Mono", monospace; font-size: .56rem; }
+    .menu-sidebar-note { margin-top: 30px; border-left: 3px solid var(--brass); padding-left: 14px; }
+    .menu-sidebar-note strong { font-family: "Bitter Variable", serif; }
+    .menu-sidebar-note p { margin: 5px 0 0; color: var(--muted); font-size: .76rem; }
+    .menu-category { scroll-margin-top: calc(var(--header-height) + 28px); }
+    .menu-item { padding: 26px 8px; }
+  }
+</style>
