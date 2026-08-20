@@ -23,4 +23,6 @@ pnpm build
 
 ## Deployment
 
-Astro generates the static site in `dist/`. Netlify deployment and security headers are configured in `netlify.toml`.
+Astro generates the static site in `dist/`. Pushes to `main` are built and deployed to GitHub Pages by `.github/workflows/deploy.yml`.
+
+The production URL is `https://vault223.com`. GitHub Pages must use **GitHub Actions** as its publishing source rather than the legacy Jekyll branch build.
