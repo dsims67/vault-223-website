@@ -59,11 +59,36 @@ test("visible mobile controls meet the 44px touch target", async ({ page }) => {
 
 test("order chooser opens from the sitewide action", async ({ page }) => {
   await page.goto("/");
-  await page.locator(".desktop-order:visible, .mobile-order-trigger:visible").click();
+  const orderTrigger = (page.viewportSize()?.width ?? 0) < 960
+    ? page.locator("[data-mobile-order-sentinel]")
+    : page.locator(".desktop-order");
+  await orderTrigger.click();
   await expect(page.getByRole("heading", { name: "Choose a delivery service" })).toBeVisible();
   await expect(page.getByRole("link", { name: /DoorDash/ })).toBeVisible();
   await expect(page.getByRole("link", { name: /Uber Eats/ })).toBeVisible();
   await expect(page.getByText(/Clover can be added/)).toHaveCount(0);
+});
+
+test("mobile order bar appears after the hero order action scrolls past", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 760 });
+  await page.goto("/");
+
+  const orderBar = page.locator(".mobile-order-bar");
+  const heroOrder = page.locator("[data-mobile-order-sentinel]");
+
+  await expect(heroOrder).toBeVisible();
+  await expect(orderBar).toHaveAttribute("aria-hidden", "true");
+
+  await heroOrder.evaluate((element) => {
+    const headerHeight = Number.parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue("--header-height"),
+    ) || 72;
+    const bottom = element.getBoundingClientRect().bottom + window.scrollY;
+    window.scrollTo(0, bottom + headerHeight + 1);
+  });
+
+  await expect(orderBar).toHaveAttribute("aria-hidden", "false");
+  await expect(page.locator(".mobile-order-trigger")).toBeEnabled();
 });
 
 test("header navigation reaches Menu and Visit", async ({ page }) => {

@@ -58,13 +58,36 @@ export default function SiteChrome({ logoSrc, currentPath }: { logoSrc: string; 
   const [hydrated, setHydrated] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
   const [orderOpen, setOrderOpen] = useState(false);
+  const [mobileOrderVisible, setMobileOrderVisible] = useState(false);
   const isActive = (href: string) => (href === "/" ? currentPath === "/" : currentPath.startsWith(href));
 
   useEffect(() => {
     setHydrated(true);
     const openOrder = () => setOrderOpen(true);
+    const orderSentinel = document.querySelector<HTMLElement>("[data-mobile-order-sentinel]");
+    let orderObserver: IntersectionObserver | undefined;
+
+    if (orderSentinel) {
+      const headerHeight = Number.parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue("--header-height"),
+      ) || 72;
+
+      orderObserver = new IntersectionObserver(
+        ([entry]) => {
+          setMobileOrderVisible(!entry.isIntersecting && entry.boundingClientRect.bottom <= headerHeight);
+        },
+        { rootMargin: `-${headerHeight}px 0px 0px`, threshold: 0 },
+      );
+      orderObserver.observe(orderSentinel);
+    } else {
+      setMobileOrderVisible(true);
+    }
+
     window.addEventListener("vault:order", openOrder);
-    return () => window.removeEventListener("vault:order", openOrder);
+    return () => {
+      orderObserver?.disconnect();
+      window.removeEventListener("vault:order", openOrder);
+    };
   }, []);
 
   return (
@@ -123,8 +146,8 @@ export default function SiteChrome({ logoSrc, currentPath }: { logoSrc: string; 
           </div>
         </div>
       </header>
-      <div className="mobile-order-bar">
-        <button className={cn(buttonVariants({ variant: "primary", size: "large" }), "mobile-order-trigger")} disabled={!hydrated} onClick={() => setOrderOpen(true)}>
+      <div className="mobile-order-bar" data-visible={mobileOrderVisible} aria-hidden={!mobileOrderVisible}>
+        <button className={cn(buttonVariants({ variant: "primary", size: "large" }), "mobile-order-trigger")} disabled={!hydrated || !mobileOrderVisible} onClick={() => setOrderOpen(true)}>
           <ForkKnife size={19} weight="bold" /> Order Online
         </button>
       </div>
