@@ -15,7 +15,7 @@ The creative direction is **modern heritage**: a warm neighborhood cafe expresse
 - **Address:** 223 N Main St, Kokomo, IN 46901
 - **Phone:** (765) 553-3417
 - **Email:** management@vault223.com
-- **Hours:** Tuesday–Friday, 7:00 AM–5:00 PM; Saturday, 10:00 AM–4:00 PM; Sunday–Monday, closed
+- **Hours:** Tuesday–Saturday, 8:00 AM–4:00 PM; Sunday–Monday, closed
 - **Timezone:** America/Indiana/Indianapolis
 - **Facebook:** https://www.facebook.com/p/Vault-223-61575300112455/
 - **DoorDash:** https://www.doordash.com/store/vault-223-kokomo-46300935/

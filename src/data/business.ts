@@ -39,11 +39,11 @@ export const business = businessSchema.parse({
 export const weeklyHours: WeeklyHours[] = [
   { day: "sunday", label: "Sunday", intervals: [] },
   { day: "monday", label: "Monday", intervals: [] },
-  { day: "tuesday", label: "Tuesday", intervals: [{ open: "07:00", close: "17:00" }] },
-  { day: "wednesday", label: "Wednesday", intervals: [{ open: "07:00", close: "17:00" }] },
-  { day: "thursday", label: "Thursday", intervals: [{ open: "07:00", close: "17:00" }] },
-  { day: "friday", label: "Friday", intervals: [{ open: "07:00", close: "17:00" }] },
-  { day: "saturday", label: "Saturday", intervals: [{ open: "10:00", close: "16:00" }] },
+  { day: "tuesday", label: "Tuesday", intervals: [{ open: "08:00", close: "16:00" }] },
+  { day: "wednesday", label: "Wednesday", intervals: [{ open: "08:00", close: "16:00" }] },
+  { day: "thursday", label: "Thursday", intervals: [{ open: "08:00", close: "16:00" }] },
+  { day: "friday", label: "Friday", intervals: [{ open: "08:00", close: "16:00" }] },
+  { day: "saturday", label: "Saturday", intervals: [{ open: "08:00", close: "16:00" }] },
 ];
 
 export const specialHours: SpecialHours[] = [];
